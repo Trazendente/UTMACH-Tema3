@@ -9,145 +9,37 @@
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="manifest" href="manifest.webmanifest">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
- <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden; /* evita el scroll y el fondo blanco de abajo */
-      }
 
-      body { 
-        font-family: 'Roboto', sans-serif; 
-        letter-spacing: 0.05em; 
-        font-size: max(2vw, 2vh); 
-        color:white;
-      }
-
-      /* Panel genérico de overlays */
-      .ctaDiv { 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center; 
-        position: fixed; 
-        left: 0; 
-        right: 0; 
-        top: 0; 
-        bottom: 0; 
-        background: #2f2e32aa; 
-        z-index: 99; 
-        transition: 0.5s;
-      }
-
+    <style>
+      body { font-family: 'Roboto', sans-serif; letter-spacing: 0.05em; font-size: max(2vw, 2vh); color:white}
+      button {height:max(5vw, 5vh);font-size: max(2vw, 2vh);font-weight: bold; border-radius: max(1.5vw, 1.5vh); padding-left: max(5vw, 5vh); padding-right: max(5vw, 5vh); border: 0; color: #62a7fe; background: #3d3d3d; transition:0.1s;user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+      button:hover { filter: brightness(1.15)}
+      button:active { transform: scale(0.95); filter: brightness(0.85)}
+      .ctaDiv { display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: #2f2e32aa; z-index: 99; transition: 0.5s;}
       @keyframes spin {
         0%   { transform: translateX(-50%) rotate(0deg); }
         100% { transform: translateX(-50%) rotate(360deg); }
       }
-      
-      /* PANTALLA INICIAL */
-      #startARDiv {
-        background: url("TemplateData/Portada.png") center/cover no-repeat;
-        background-color:#000;
-        background-repeat:no-repeat;
-      }
-
-      /* Contenedor de botón + texto (pegado a la parte baja del robot) */
-      .ctaContent {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 12vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 0 6vw;
-      }
-
-      /* BOTÓN estilo maqueta */
-      #startARButton {
-        visibility:hidden;
-        background:#FFFFFF;
-        color:#1c478d;                /* violeta */
-        border: 0.6vw solid #1c478d;  /* borde fucsia */
-        border-radius: 999px;
-        padding: 2.4vw 9vw;
-        font-size: max(2.6vw, 2.6vh);
-        font-weight: 700;
-  
-		   position: fixed;
-  bottom: 28vh; /* 👈 aumenta este valor para bajarlo */
-		
-      }
-
-      #startARButton:active {
-        transform: scale(0.95);
-      }
-
-      /* TEXTO estilo tarjeta blanca con borde fucsia */
-      .arMessage {
-        margin-top: 3vh;
-        background:#FFFFFF;
-        color:#1c478d;
-        border: 0.6vw solid #1c478d;
-        border-radius: 3vw;
-        padding: 4vw 5vw;
-        width: 100%;
-        max-width: 90vw;
-        font-size: max(2.2vw, 2.2vh);
-        line-height: 1.3;
-
-      }
-
-      /* spinner centrado mientras carga */
-      #spinner {
-        position: absolute; 
-        left: 50%; 
-        bottom: 40%; 
-        transform: translateX(-50%);
-        border: 5px solid rgba(255,255,255,0.2); 
-        border-top: 5px solid white;
-        border-radius: 50%; 
-        width: 50px; 
-        height: 50px;
-        animation: spin 1s linear infinite;
-      }
-
-      button { 
-        user-select: none; 
-        -webkit-user-select: none; 
-        -moz-user-select: none; 
-        -ms-user-select: none; 
-      }
     </style>
-    </head>
+  </head>
   <body>
     <!--IMAGETARGETS-->
 
     <video id="webcam-video" muted autoplay playsinline style="width:1px;position:absolute"></video>
     <canvas id="video-canvas" style="width:100%; height:100%; object-fit:cover; position:absolute"></canvas>
-
-    <!-- =========================
-         PANTALLA INICIAL
-    ========================== -->
-    <div id="startARDiv" class="ctaDiv">
-
-     <select id="chooseCamSel" style="display:none"></select>
-
-      <!-- Contenido principal (botón + mensaje) -->
-      <div class="ctaContent">
-        <button id="startARButton" onclick="StartAR()">Permitir Acceso</button>
-
-        <p class="arMessage">
-          Esta experiencia de Realidad Aumentada requiere acceso a la cámara y los sensores de movimiento de tu dispositivo.
-        </p>
+    <div id="startARDiv" class="ctaDiv" style="background: #2f2e32">
+      <select id="chooseCamSel" style="visibility: hidden; background: transparent; border: .05vh solid white; border-radius: max(0.5vw, 0.5vh); color:white; font-size: max(1.5vw, 1.5vh); position: absolute; bottom: 80px" 
+        onchange="SelectCam()"></select>
+      <p style="text-align: center; width:min(60vw, 60vh);">This augmented reality experience requires access to your device's camera and motion sensors</p>
+      <button id="startARButton" onclick="StartAR()" style="visibility: hidden">ALLOW ACCESS</button>
+      <div id="spinner" 
+        style="position: absolute; left: 50%; bottom: 40%; transform: translateX(-50%);
+              border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid white;
+              border-radius: 50%; width: 50px; height: 50px;
+              animation: spin 1s linear infinite;">
       </div>
-
-      <!-- spinner mientras carga opencv / webcams -->
-      <div id="spinner"></div>
+      <br><br><br>
     </div>
-
     <div id="screenshotDiv" style="visibility: hidden; opacity: 0;" class="ctaDiv">
         <div style="position:relative; background-color:#2c2b2f; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.25); border-radius: max(1.5vh, 1.5vw); text-align: center; overflow: hidden"> 
           <img id="screenshotImg" src="" alt="screenshot" style="width:80vw; height:80vh">
@@ -160,9 +52,9 @@
           <p style="font-size: max(1vw, 1vh); color: #fff6" >Press and hold to save or share this screenshot</p>
           </div>
     </div>
-
     <div id="confirmUrlDiv" style="visibility: hidden; opacity: 0;" class="ctaDiv">
-        <div style="position:relative; background-color:#1c478d; padding:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.25); width: min(80vw,80vh); display:flex; flex-direction: column; align-items: center; border-radius: 1.5vh;">
+        <div style="position:relative; background-color:#2c2b2f; padding:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.25); width: min(80vw,80vh); display:flex; flex-direction: column; align-items: center; border-radius: 1.5vh;
+">
             <p id="confirmUrlText" style="text-align: center; width:80%; overflow: hidden; text-overflow: ellipsis;">Are you sure you want to visit url.com?</p>
             <div style="width: 100%">
                 <button style="width: 100%; margin-bottom: 15px;" onclick="window.open(newUrlString, '_blank').focus(); HideConfirmUrl()">VISIT SITE</button>
@@ -170,21 +62,17 @@
             </div>
         </div>
     </div>
-    <div id="errorDiv" class="ctaDiv" style="visibility: hidden; opacity: 0; background-color:#000000">
+    <div id="errorDiv" class="ctaDiv" style="visibility: hidden; opacity: 0; background-color:#2c2b2f">
         <p id="errorText" style="text-align: center; width:60vw; color:#7f3f3f; font-size: max(3vw, 3vh);"></p>
     </div>
-
-    <div id="unity-container" class="unity-mobile">
-        <canvas id="unity-canvas" style="width: 100%; height: 100%; background: #0000; z-index: -99;"></canvas>
-        <div id="unity-loading-bar">
-    <!-- Logo personalizado arriba -->
-   <img src="TemplateData/LogoCarrerav2.png" alt="Trazendente" style="display:block; margin:0 auto 20px auto; max-width:180px; height:auto;">
-    <!-- Barra de carga -->
-    <div id="unity-progress-bar-empty">
-        <div id="unity-progress-bar-full"></div>
-    </div>
-</div>
-
+    <div id="unity-container">
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
       <div id="unity-warning"> </div>
     </div>
     <script src="arcamera.js" type="text/javascript"></script>
